@@ -1,13 +1,15 @@
 package algo.yu.model;
 
+import algo.yu.enums.TokenEnum;
+
 public class Element {
     private int line;
-    private Token token;
+    private TokenEnum tokenEnum;
     private String value;
 
-    public Element(int line, Token token, String value) {
+    public Element(int line, TokenEnum tokenEnum, String value) {
         this.line = line;
-        this.token = token;
+        this.tokenEnum = tokenEnum;
         this.value = value;
     }
 
@@ -19,12 +21,12 @@ public class Element {
         this.line = line;
     }
 
-    public Token getToken() {
-        return token;
+    public TokenEnum getToken() {
+        return tokenEnum;
     }
 
-    public void setToken(Token token) {
-        this.token = token;
+    public void setToken(TokenEnum tokenEnum) {
+        this.tokenEnum = tokenEnum;
     }
 
     public String getValue() {

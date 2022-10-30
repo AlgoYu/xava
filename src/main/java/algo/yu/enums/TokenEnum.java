@@ -1,5 +1,5 @@
-package algo.yu.model;
+package algo.yu.enums;
 
-public enum Token {
+public enum TokenEnum {
     KEYWORD, SEPARATOR, IDENTIFIER, UNKNOWN;
 }

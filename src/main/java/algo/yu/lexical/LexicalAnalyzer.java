@@ -1,9 +1,10 @@
 package algo.yu.lexical;
 
+import algo.yu.enums.SeparatorEnum;
 import algo.yu.model.Element;
-import algo.yu.model.KeyWordEnum;
+import algo.yu.enums.KeyWordEnum;
 import algo.yu.model.Sentence;
-import algo.yu.model.Token;
+import algo.yu.enums.TokenEnum;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -16,9 +17,10 @@ import java.util.List;
 import java.util.Map;
 
 public class LexicalAnalyzer {
-    private static final Map<String, Token> keywordMap = new HashMap<>() {
+    private static final Map<String, TokenEnum> keywordMap = new HashMap<>() {
         {
             putAll(KeyWordEnum.getKeyWordTokenMap());
+            putAll(SeparatorEnum.getSeparatorTokenMap());
         }
     };
 
@@ -42,9 +44,9 @@ public class LexicalAnalyzer {
                 if (string == null || string.length() == 0) {
                     continue;
                 }
-                Token token = keywordMap.get(string.toLowerCase());
-                if (token != null) {
-                    result.add(new Element(sen.getRow(), token, string));
+                TokenEnum tokenEnum = keywordMap.get(string.toLowerCase());
+                if (tokenEnum != null) {
+                    result.add(new Element(sen.getRow(), tokenEnum, string));
                     continue;
                 }
                 result.addAll(wordAnalyzer(sen, string));
@@ -55,7 +57,7 @@ public class LexicalAnalyzer {
 
     private List<Element> wordAnalyzer(Sentence sentence, String string) {
         List<Element> result = new ArrayList<>();
-        result.add(new Element(sentence.getRow(), Token.UNKNOWN, string));
+        result.add(new Element(sentence.getRow(), TokenEnum.UNKNOWN, string));
         return result;
         /*char[] chars = string.toCharArray();
         for (int i = 0; i < chars.length; i++) {
@@ -83,13 +85,12 @@ public class LexicalAnalyzer {
                 if (str.startsWith("/*")) {
                     String tmp = null;
                     while ((tmp = bufferedReader.readLine()) != null && !tmp.endsWith("*/")) {
+                        row++;
                     }
                     continue;
                 }
                 // 正文
-                if (!str.startsWith("/*") && str.endsWith("*/") && !str.startsWith("//")) {
-                    sentences.add(new Sentence(row, str));
-                }
+                sentences.add(new Sentence(row, str));
             }
             return sentences;
         } catch (IOException e) {

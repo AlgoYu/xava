@@ -1,4 +1,4 @@
-package algo.yu.model;
+package algo.yu.enums;
 
 
 import java.util.HashMap;
@@ -15,16 +15,16 @@ public enum KeyWordEnum {
     IF("if"), ELSE("else"),
     FOR("for");
 
-    public final String symbol;
+    private final String symbol;
 
     KeyWordEnum(String symbol) {
         this.symbol = symbol;
     }
 
-    public static Map<String, Token> getKeyWordTokenMap() {
-        Map<String, Token> map = new HashMap<>();
+    public static Map<String, TokenEnum> getKeyWordTokenMap() {
+        Map<String, TokenEnum> map = new HashMap<>();
         for (KeyWordEnum keyWordEnum : values()) {
-            map.put(keyWordEnum.symbol, Token.KEYWORD);
+            map.put(keyWordEnum.symbol, TokenEnum.KEYWORD);
         }
         return map;
     }
