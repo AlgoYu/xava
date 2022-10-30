@@ -1,6 +1,7 @@
 package algo.yu.lexical;
 
 import algo.yu.enums.SeparatorEnum;
+import algo.yu.enums.StateEnum;
 import algo.yu.model.Element;
 import algo.yu.enums.KeyWordEnum;
 import algo.yu.model.Sentence;
@@ -17,10 +18,17 @@ import java.util.List;
 import java.util.Map;
 
 public class LexicalAnalyzer {
+    // 关键字
     private static final Map<String, TokenEnum> keywordMap = new HashMap<>() {
         {
             putAll(KeyWordEnum.getKeyWordTokenMap());
             putAll(SeparatorEnum.getSeparatorTokenMap());
+        }
+    };
+    // 状态机
+    private static final Map<StateEnum, TokenEnum> stateMap = new HashMap<>() {
+        {
+            put(StateEnum.S1, TokenEnum.IDENTIFIER);
         }
     };
 
@@ -57,12 +65,49 @@ public class LexicalAnalyzer {
 
     private List<Element> wordAnalyzer(Sentence sentence, String string) {
         List<Element> result = new ArrayList<>();
-        result.add(new Element(sentence.getRow(), TokenEnum.UNKNOWN, string));
-        return result;
-        /*char[] chars = string.toCharArray();
-        for (int i = 0; i < chars.length; i++) {
+        StateEnum state = StateEnum.INIT;
+        int preIndex = 0;
+        for (int i = 0; i < string.length(); i++) {
+            char ch = string.charAt(i);
+            switch (state) {
+                case INIT:
+                    if ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z')) {
+                        state = StateEnum.S1;
+                        break;
+                    }
+                    if (ch >= '0' && ch <= '9') {
+                        state = StateEnum.S2;
+                        break;
+                    }
+                    state = StateEnum.INVALID;
+                    break;
+                // 标识符
+                case S1:
+                    if (ch == '.') {
+                        result.add(new Element(sentence.getRow(), TokenEnum.IDENTIFIER, string.substring(preIndex, i)));
+                    }
+                    break;
+                // 整数
+                case S2:
+                    if (ch < '0' || ch > '9') {
 
-        }*/
+                    }
+                    break;
+                // 浮点数
+                case S3:
+                    break;
+                case INVALID:
+                    break;
+                // 无效
+                default:
+                    state = StateEnum.INVALID;
+                    break;
+            }
+        }
+        if (state != StateEnum.INVALID) {
+            result.add(new Element(sentence.getRow(), stateMap.getOrDefault(state, TokenEnum.IDENTIFIER), string.substring(preIndex)));
+        }
+        return result;
     }
 
     private List<Sentence> getSentence(String filePath) {
