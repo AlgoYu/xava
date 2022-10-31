@@ -83,14 +83,18 @@ public class LexicalAnalyzer {
                     break;
                 // 标识符
                 case S1:
-                    if (ch == '.') {
+                    if (ch == ';' || ch == '.') {
                         result.add(new Element(sentence.getRow(), TokenEnum.IDENTIFIER, string.substring(preIndex, i)));
+                        result.add(new Element(sentence.getRow(), TokenEnum.SEPARATOR, String.valueOf(ch)));
+                        state = StateEnum.INIT;
                     }
                     break;
                 // 整数
                 case S2:
-                    if (ch < '0' || ch > '9') {
-
+                    if (ch == ';' || ch == '.') {
+                        result.add(new Element(sentence.getRow(), TokenEnum.KEYWORD, string.substring(preIndex, i)));
+                        result.add(new Element(sentence.getRow(), TokenEnum.SEPARATOR, String.valueOf(ch)));
+                        state = StateEnum.INIT;
                     }
                     break;
                 // 浮点数
