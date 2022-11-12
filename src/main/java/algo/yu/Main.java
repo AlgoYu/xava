@@ -3,6 +3,7 @@ package algo.yu;
 import algo.yu.lexical.LexicalAnalyzer;
 import algo.yu.model.Element;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
@@ -11,7 +12,7 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
         LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer();
         List<Element> analysis = lexicalAnalyzer.analysis("/Users/xiaoyu/JavaProject/xava/source/test1.xava");

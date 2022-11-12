@@ -1,5 +1,5 @@
 package algo.yu.enums;
 
 public enum TokenEnum {
-    KEYWORD, SEPARATOR, IDENTIFIER, UNKNOWN;
+    KEYWORD, OPERATOR, SEPARATOR, IDENTIFIER, UNKNOWN;
 }

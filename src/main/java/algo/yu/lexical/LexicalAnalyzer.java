@@ -1,5 +1,6 @@
 package algo.yu.lexical;
 
+import algo.yu.enums.OperatorEnum;
 import algo.yu.enums.SeparatorEnum;
 import algo.yu.enums.StateEnum;
 import algo.yu.model.Element;
@@ -22,6 +23,7 @@ public class LexicalAnalyzer {
     private static final Map<String, TokenEnum> keywordMap = new HashMap<>() {
         {
             putAll(KeyWordEnum.getKeyWordTokenMap());
+            putAll(OperatorEnum.getSeparatorTokenMap());
             putAll(SeparatorEnum.getSeparatorTokenMap());
         }
     };
@@ -138,7 +140,7 @@ public class LexicalAnalyzer {
                     }
                     continue;
                 }
-                // 正文
+                // 代码
                 sentences.add(new Sentence(row, str));
             }
             return sentences;
