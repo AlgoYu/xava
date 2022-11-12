@@ -68,9 +68,10 @@ public class LexicalAnalyzer {
     private List<Element> wordAnalyzer(Sentence sentence, String string) {
         List<Element> result = new ArrayList<>();
         StateEnum state = StateEnum.INIT;
-        int preIndex = 0;
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < string.length(); i++) {
             char ch = string.charAt(i);
+            sb.append(ch);
             switch (state) {
                 case INIT:
                     if ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z')) {
@@ -86,17 +87,19 @@ public class LexicalAnalyzer {
                 // 标识符
                 case S1:
                     if (ch == ';' || ch == '.') {
-                        result.add(new Element(sentence.getRow(), TokenEnum.IDENTIFIER, string.substring(preIndex, i)));
+                        result.add(new Element(sentence.getRow(), TokenEnum.IDENTIFIER, sb.toString()));
                         result.add(new Element(sentence.getRow(), TokenEnum.SEPARATOR, String.valueOf(ch)));
                         state = StateEnum.INIT;
+                        sb.delete(0, sb.length());
                     }
                     break;
                 // 整数
                 case S2:
                     if (ch == ';' || ch == '.') {
-                        result.add(new Element(sentence.getRow(), TokenEnum.KEYWORD, string.substring(preIndex, i)));
+                        result.add(new Element(sentence.getRow(), TokenEnum.KEYWORD, sb.toString()));
                         result.add(new Element(sentence.getRow(), TokenEnum.SEPARATOR, String.valueOf(ch)));
                         state = StateEnum.INIT;
+                        sb.delete(0, sb.length());
                     }
                     break;
                 // 浮点数
@@ -110,8 +113,8 @@ public class LexicalAnalyzer {
                     break;
             }
         }
-        if (state != StateEnum.INVALID) {
-            result.add(new Element(sentence.getRow(), stateMap.getOrDefault(state, TokenEnum.IDENTIFIER), string.substring(preIndex)));
+        if (state != StateEnum.INVALID && state != StateEnum.INIT) {
+            result.add(new Element(sentence.getRow(), stateMap.getOrDefault(state, TokenEnum.IDENTIFIER), sb.toString()));
         }
         return result;
     }

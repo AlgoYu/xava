@@ -13,7 +13,7 @@ public enum KeyWordEnum {
     FLOT("flot"), DOUBLE("double"),
     STRING("string"),
     IF("if"), ELSE("else"),
-    FOR("for");
+    FOR("for"), MAIN("main"), VOID("void"), FUNCTION("func");
 
     private final String symbol;
 
