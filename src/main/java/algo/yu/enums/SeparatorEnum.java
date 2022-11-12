@@ -4,7 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum SeparatorEnum {
-    LEFT_BRACKET("("), RIGHT_BRACKET(")");
+    LEFT_PARENTHESES("("), RIGHT_PARENTHESES(")"),
+    LEFT_CURLY_BRACKETS("{"), RIGHT_CURLY_BRACKETS("}"),
+    LEFT_SQUARE_BRACKETS("["), RIGHT_SQUARE_BRACKETS("]"),
+    semicolon(";");
 
     private final String symbol;
 
