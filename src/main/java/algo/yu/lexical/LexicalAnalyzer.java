@@ -93,7 +93,7 @@ public class LexicalAnalyzer {
                     if (Character.isLetterOrDigit(ch)) {
                         break;
                     }
-                    result.add(generateElement(sentence.getRow(), sb, TokenEnum.IDENTIFIER));
+                    result.add(generateElement(sentence.getRow(), sb, keywordMap.getOrDefault(sb.toString(), TokenEnum.IDENTIFIER)));
                     if (isOperator(ch)) {
                         state = StateEnum.OPERATOR;
                     } else if (isSeparator(ch)) {
