@@ -30,9 +30,10 @@ public class LexicalAnalyzer {
     // 状态机
     private static final Map<StateEnum, TokenEnum> stateMap = new HashMap<>() {
         {
-            put(StateEnum.S1, TokenEnum.IDENTIFIER);
-            put(StateEnum.S2, TokenEnum.LITERAL);
-            put(StateEnum.S3, TokenEnum.IDENTIFIER);
+            put(StateEnum.IDENTIFIER, TokenEnum.IDENTIFIER);
+            put(StateEnum.LITERAL, TokenEnum.LITERAL);
+            put(StateEnum.SEPARATOR, TokenEnum.IDENTIFIER);
+            put(StateEnum.OPERATOR, TokenEnum.OPERATOR);
         }
     };
 
@@ -76,54 +77,71 @@ public class LexicalAnalyzer {
             switch (state) {
                 case INIT:
                     if (Character.isLetter(ch)) {
-                        state = StateEnum.S1;
-                        break;
+                        state = StateEnum.IDENTIFIER;
+                    } else if (Character.isDigit(ch)) {
+                        state = StateEnum.LITERAL;
+                    } else if (isSeparator(ch)) {
+                        state = StateEnum.SEPARATOR;
+                    } else if (isOperator(ch)) {
+                        state = StateEnum.OPERATOR;
+                    } else {
+                        state = StateEnum.INVALID;
                     }
-                    if (Character.isDigit(ch)) {
-                        state = StateEnum.S2;
-                        break;
-                    }
-                    if (isSeparator(ch)) {
-                        state = StateEnum.S3;
-                    }
-                    state = StateEnum.INVALID;
                     break;
                 // 标识符
-                case S1:
-                    if (!Character.isLetterOrDigit(ch)) {
-                        result.add(new Element(sentence.getRow(), TokenEnum.IDENTIFIER, sb.toString()));
-                        state = StateEnum.S3;
-                        sb.delete(0, sb.length());
+                case IDENTIFIER:
+                    if (Character.isLetterOrDigit(ch)) {
+                        break;
+                    }
+                    result.add(generateElement(sentence.getRow(), sb, TokenEnum.IDENTIFIER));
+                    if (isOperator(ch)) {
+                        state = StateEnum.OPERATOR;
+                    } else if (isSeparator(ch)) {
+                        state = StateEnum.SEPARATOR;
+                    } else {
+                        state = StateEnum.INVALID;
                     }
                     break;
                 // 字面值
-                case S2:
-                    if (Character.isLetter(ch)) {
-                        state = StateEnum.S1;
+                case LITERAL:
+                    if (Character.isLetter(ch) || ch == '.') {
                         break;
-                    }
-                    if (ch != '.' && !Character.isLetterOrDigit(ch)) {
-                        result.add(new Element(sentence.getRow(), TokenEnum.KEYWORD, sb.toString()));
-                        state = StateEnum.INIT;
-                        sb.delete(0, sb.length());
+                    } else if (isSeparator(ch)) {
+                        result.add(generateElement(sentence.getRow(), sb, TokenEnum.SEPARATOR));
+                        state = StateEnum.SEPARATOR;
+                    } else if (Character.isLetter(ch)) {
+                        state = StateEnum.IDENTIFIER;
+                    } else if (isOperator(ch)) {
+                        result.add(generateElement(sentence.getRow(), sb, TokenEnum.OPERATOR));
+                        state = StateEnum.OPERATOR;
+                    } else {
+                        state = StateEnum.INVALID;
                     }
                     break;
                 // 分隔符
-                case S3:
-                    result.add(new Element(sentence.getRow(), TokenEnum.KEYWORD, sb.toString()));
-                    sb.delete(0, sb.length());
+                case SEPARATOR:
+                    result.add(generateElement(sentence.getRow(), sb, TokenEnum.SEPARATOR));
+                    if (isSeparator(ch)) {
+                        break;
+                    }
                     if (Character.isLetter(ch)) {
-                        state = StateEnum.S1;
+                        state = StateEnum.IDENTIFIER;
                         break;
-                    }
-                    if (Character.isDigit(ch)) {
-                        state = StateEnum.S2;
+                    } else if (Character.isDigit(ch)) {
+                        state = StateEnum.LITERAL;
                         break;
+                    } else {
+                        state = StateEnum.INVALID;
                     }
+                    break;
+                // 操作符
+                case OPERATOR:
+                    result.add(new Element(sentence.getRow(), TokenEnum.KEYWORD, sb.toString()));
+                    state = StateEnum.INVALID;
                     break;
                 case INVALID:
-                    break;
-                // 无效
+                    throw new RuntimeException(String.format("无法识别%d行字符%s", sentence.getRow(), ch));
+                    // 无效
                 default:
                     state = StateEnum.INVALID;
                     break;
@@ -131,15 +149,28 @@ public class LexicalAnalyzer {
             sb.append(ch);
         }
         if (state != StateEnum.INVALID && state != StateEnum.INIT) {
-            result.add(new Element(sentence.getRow(), stateMap.getOrDefault(state, TokenEnum.UNKNOWN), sb.toString()));
+            TokenEnum tokenEnum = stateMap.get(state);
+            if (tokenEnum == null) {
+                throw new RuntimeException(String.format("无法识别%d行字符%s", sentence.getRow(), sb.toString()));
+            }
+            result.add(generateElement(sentence.getRow(), sb, tokenEnum));
         }
         return result;
     }
 
     private boolean isSeparator(char ch) {
-        return ch == '.' || ch == '(' || ch == ')' || ch == '{' || ch == '}' || ch == '[' || ch == ']';
+        return ch == ';' || ch == '.' || ch == '(' || ch == ')' || ch == '{' || ch == '}' || ch == '[' || ch == ']';
     }
 
+    private boolean isOperator(char ch) {
+        return ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '>' || ch == '<';
+    }
+
+    private Element generateElement(int line, StringBuilder sb, TokenEnum tokenEnum) {
+        Element element = new Element(line, tokenEnum, sb.toString());
+        sb.delete(0, sb.length());
+        return element;
+    }
 
     private List<Sentence> getSentence(String filePath) {
         File file = new File(filePath);
