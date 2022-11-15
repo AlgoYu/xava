@@ -104,15 +104,15 @@ public class LexicalAnalyzer {
                     break;
                 // 字面值
                 case LITERAL:
-                    if (Character.isLetter(ch) || ch == '.') {
+                    if (Character.isDigit(ch) || ch == '.') {
                         break;
-                    } else if (isSeparator(ch)) {
-                        result.add(generateElement(sentence.getRow(), sb, TokenEnum.SEPARATOR));
+                    }
+                    result.add(generateElement(sentence.getRow(), sb, TokenEnum.LITERAL));
+                    if (isSeparator(ch)) {
                         state = StateEnum.SEPARATOR;
                     } else if (Character.isLetter(ch)) {
                         state = StateEnum.IDENTIFIER;
                     } else if (isOperator(ch)) {
-                        result.add(generateElement(sentence.getRow(), sb, TokenEnum.OPERATOR));
                         state = StateEnum.OPERATOR;
                     } else {
                         state = StateEnum.INVALID;
