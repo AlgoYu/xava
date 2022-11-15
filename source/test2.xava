@@ -1,4 +1,4 @@
-# 函数
+// 函数
 void main(){
     int a = 100;
     int b = -30;

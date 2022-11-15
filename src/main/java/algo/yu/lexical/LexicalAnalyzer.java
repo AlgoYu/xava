@@ -137,7 +137,14 @@ public class LexicalAnalyzer {
                 // 操作符
                 case OPERATOR:
                     result.add(new Element(sentence.getRow(), TokenEnum.OPERATOR, sb.toString()));
-                    state = StateEnum.INVALID;
+                    if (isOperator(ch)) {
+                        break;
+                    }
+                    if (Character.isDigit(ch)) {
+                        state = StateEnum.LITERAL;
+                    } else {
+                        state = StateEnum.INVALID;
+                    }
                     break;
                 case INVALID:
                     throw new RuntimeException(String.format("无法识别%d行字符%s", sentence.getRow(), ch));
