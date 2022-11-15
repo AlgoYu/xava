@@ -1,0 +1,20 @@
+# 条件分支
+void main(){
+    int a = 100;
+    int b = -30;
+    int c = a + c;
+    if(c > 100){
+        // do something
+    }else if(c > 50){
+        // do something
+    }else{
+        // do something
+    }
+
+    // 无break
+    switch(c){
+        case 70:
+        case 60:
+        default:
+    }
+}

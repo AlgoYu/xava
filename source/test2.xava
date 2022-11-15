@@ -1,0 +1,10 @@
+# 函数
+void main(){
+    int a = 100;
+    int b = -30;
+    int c = add(a,b);
+}
+
+int add(int a, int b){
+   return a + b;
+}
