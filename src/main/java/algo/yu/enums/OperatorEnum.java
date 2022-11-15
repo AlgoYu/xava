@@ -16,7 +16,7 @@ public enum OperatorEnum {
     public static Map<String, TokenEnum> getSeparatorTokenMap() {
         Map<String, TokenEnum> map = new HashMap<>();
         for (OperatorEnum operatorEnum : values()) {
-            map.put(operatorEnum.symbol, TokenEnum.SEPARATOR);
+            map.put(operatorEnum.symbol, TokenEnum.OPERATOR);
         }
         return map;
     }

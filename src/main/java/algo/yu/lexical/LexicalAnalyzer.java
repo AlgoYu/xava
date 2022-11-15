@@ -136,7 +136,7 @@ public class LexicalAnalyzer {
                     break;
                 // 操作符
                 case OPERATOR:
-                    result.add(new Element(sentence.getRow(), TokenEnum.KEYWORD, sb.toString()));
+                    result.add(new Element(sentence.getRow(), TokenEnum.OPERATOR, sb.toString()));
                     state = StateEnum.INVALID;
                     break;
                 case INVALID:
@@ -159,11 +159,11 @@ public class LexicalAnalyzer {
     }
 
     private boolean isSeparator(char ch) {
-        return ch == ';' || ch == '.' || ch == '(' || ch == ')' || ch == '{' || ch == '}' || ch == '[' || ch == ']';
+        return ch == ';' || ch == ',' || ch == '.' || ch == '(' || ch == ')' || ch == '{' || ch == '}' || ch == '[' || ch == ']';
     }
 
     private boolean isOperator(char ch) {
-        return ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '>' || ch == '<';
+        return ch == '=' || ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '>' || ch == '<';
     }
 
     private Element generateElement(int line, StringBuilder sb, TokenEnum tokenEnum) {
