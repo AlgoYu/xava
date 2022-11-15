@@ -1,9 +1,7 @@
+# 基础类型赋值
 void main(){
-    int a = 0;
-    int b = 0;
-    int c = add(a,b);
-}
-
-int add(int a, int b){
-   return a + b;
+    int a = 100;
+    float b = -30;
+    bool c = false;
+    string = "This is a test.";
 }

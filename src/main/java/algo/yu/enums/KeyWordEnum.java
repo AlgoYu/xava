@@ -12,8 +12,9 @@ public enum KeyWordEnum {
     BYTE("byte"), SHORT("short"), INT("int"), LONG("long"),
     FLOT("flot"), DOUBLE("double"),
     STRING("string"),
-    IF("if"), ELSE("else"),
-    FOR("for"), MAIN("main"), VOID("void"), FUNCTION("func");
+    IF("if"), ELSE("else"), SWITCH("switch"), CASE("case"),
+    FOR("for"), BREAK("break"),
+    MAIN("main"), VOID("void"), FUNCTION("func"), RETURN("return");
 
     private final String symbol;
 
