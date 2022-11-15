@@ -32,7 +32,7 @@ public class LexicalAnalyzer {
         {
             put(StateEnum.IDENTIFIER, TokenEnum.IDENTIFIER);
             put(StateEnum.LITERAL, TokenEnum.LITERAL);
-            put(StateEnum.SEPARATOR, TokenEnum.IDENTIFIER);
+            put(StateEnum.SEPARATOR, TokenEnum.SEPARATOR);
             put(StateEnum.OPERATOR, TokenEnum.OPERATOR);
         }
     };
