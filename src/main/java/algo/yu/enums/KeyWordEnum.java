@@ -10,7 +10,7 @@ import java.util.Map;
 public enum KeyWordEnum {
     BOOL("bool"),
     BYTE("byte"), SHORT("short"), INT("int"), LONG("long"),
-    FLOT("flot"), DOUBLE("double"),
+    FLOAT("float"), DOUBLE("double"),
     STRING("string"),
     IF("if"), ELSE("else"), SWITCH("switch"), CASE("case"),
     FOR("for"), BREAK("break"),

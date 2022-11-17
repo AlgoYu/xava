@@ -2,6 +2,8 @@
 void main(){
     int a = 100;
     float b = -30;
+    float pi = 3.141597;
+    float minusPi = -3.141597;
     bool c = false;
     string = "This is a test.";
 }

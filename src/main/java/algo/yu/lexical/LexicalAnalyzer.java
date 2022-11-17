@@ -142,7 +142,7 @@ public class LexicalAnalyzer {
                     break;
                 // 操作符
                 case OPERATOR:
-                    result.add(new Element(sentence.getRow(), TokenEnum.OPERATOR, sb.toString()));
+                    result.add(generateElement(sentence.getRow(), sb, TokenEnum.OPERATOR));
                     if (isOperator(ch)) {
                         break;
                     }
