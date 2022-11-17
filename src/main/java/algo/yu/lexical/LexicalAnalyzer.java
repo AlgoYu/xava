@@ -31,7 +31,8 @@ public class LexicalAnalyzer {
     private static final Map<StateEnum, TokenEnum> stateMap = new HashMap<>() {
         {
             put(StateEnum.IDENTIFIER, TokenEnum.IDENTIFIER);
-            put(StateEnum.LITERAL, TokenEnum.LITERAL);
+            put(StateEnum.NUMBER, TokenEnum.LITERAL);
+            put(StateEnum.STRING, TokenEnum.LITERAL);
             put(StateEnum.SEPARATOR, TokenEnum.SEPARATOR);
             put(StateEnum.OPERATOR, TokenEnum.OPERATOR);
         }
@@ -52,7 +53,7 @@ public class LexicalAnalyzer {
             if (value == null || value.length() == 0) {
                 continue;
             }
-            String[] stringArray = value.split(" ");
+            String[] stringArray = splitWhite(sen.getValue());
             for (String string : stringArray) {
                 if (string == null || string.length() == 0) {
                     continue;
@@ -79,7 +80,9 @@ public class LexicalAnalyzer {
                     if (Character.isLetter(ch)) {
                         state = StateEnum.IDENTIFIER;
                     } else if (Character.isDigit(ch)) {
-                        state = StateEnum.LITERAL;
+                        state = StateEnum.NUMBER;
+                    } else if (ch == '"') {
+                        state = StateEnum.STRING;
                     } else if (isSeparator(ch)) {
                         state = StateEnum.SEPARATOR;
                     } else if (isOperator(ch)) {
@@ -102,8 +105,8 @@ public class LexicalAnalyzer {
                         state = StateEnum.INVALID;
                     }
                     break;
-                // 字面值
-                case LITERAL:
+                // 数字
+                case NUMBER:
                     if (Character.isDigit(ch) || ch == '.') {
                         break;
                     }
@@ -118,6 +121,9 @@ public class LexicalAnalyzer {
                         state = StateEnum.INVALID;
                     }
                     break;
+                // 字符串
+                case STRING:
+                    break;
                 // 分隔符
                 case SEPARATOR:
                     result.add(generateElement(sentence.getRow(), sb, TokenEnum.SEPARATOR));
@@ -128,7 +134,7 @@ public class LexicalAnalyzer {
                         state = StateEnum.IDENTIFIER;
                         break;
                     } else if (Character.isDigit(ch)) {
-                        state = StateEnum.LITERAL;
+                        state = StateEnum.NUMBER;
                         break;
                     } else {
                         state = StateEnum.INVALID;
@@ -141,7 +147,7 @@ public class LexicalAnalyzer {
                         break;
                     }
                     if (Character.isDigit(ch)) {
-                        state = StateEnum.LITERAL;
+                        state = StateEnum.NUMBER;
                     } else {
                         state = StateEnum.INVALID;
                     }
@@ -165,6 +171,41 @@ public class LexicalAnalyzer {
         return result;
     }
 
+    private String[] splitWhite(String word) {
+        StringBuilder sb = new StringBuilder();
+        List<String> result = new ArrayList<>();
+        for (int i = 0; i < word.length(); i++) {
+            char c = word.charAt(i);
+            if (c == ' ') {
+                if (sb.length() > 0) {
+                    result.add(sb.toString());
+                    sb.setLength(0);
+                }
+            } else if (c == '"') {
+                sb.append(c);
+                i++;
+                while (i < word.length() && word.charAt(i) != '"') {
+                    sb.append(word.charAt(i));
+                    i++;
+                }
+                if (i < word.length()) {
+                    sb.append(word.charAt(i));
+                    result.add(sb.toString());
+                    sb.setLength(0);
+                } else {
+                    throw new RuntimeException("找不到字符串末尾");
+                }
+            } else {
+                sb.append(c);
+            }
+        }
+        if (sb.length() > 0) {
+            result.add(sb.toString());
+        }
+        String[] strings = new String[result.size()];
+        return result.toArray(strings);
+    }
+
     private boolean isSeparator(char ch) {
         return ch == ';' || ch == ',' || ch == '.' || ch == '(' || ch == ')' || ch == '{' || ch == '}' || ch == '[' || ch == ']';
     }
@@ -175,7 +216,7 @@ public class LexicalAnalyzer {
 
     private Element generateElement(int line, StringBuilder sb, TokenEnum tokenEnum) {
         Element element = new Element(line, tokenEnum, sb.toString());
-        sb.delete(0, sb.length());
+        sb.setLength(0);
         return element;
     }
 
